@@ -19,7 +19,7 @@ export const OrgnizationsContext = React.createContext<UserProps>({
 export default function OrganizationsProvider({ children }: Props) {
   const [organizations, setOrgnizations] = useState<Organizations[]>([]);
   useEffect(() => {
-    fetch("")
+    fetch("http://localhost:7707/organization")
       .then((response) => response.json())
       .then((data) => {
         setOrgnizations(data);

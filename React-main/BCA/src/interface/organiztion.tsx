@@ -1,10 +1,8 @@
 export interface Organizations {
     name: string,
-    resources: resources[],
-    budget: number,
-  }
-  
-export interface resources {
+    resources: [{
       name: string,
       amount: number
+    }],
+    budget: number,
   }

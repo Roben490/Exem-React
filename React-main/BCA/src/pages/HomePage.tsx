@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { OrgnizationsContext } from "../providers/OrganizationsProvider";
 import { Organizations } from "../interface/organiztion";
 import { UserContext } from "../providers/UserProvider";
 import { storeContext } from "../providers/StoreProvider";
+
 
 
 const HomePage = () => {
@@ -13,35 +14,41 @@ const HomePage = () => {
   const cart = useContext(storeContext);
   const NameOfOrg = authContext?.user?.organization;
 
-  function findTheOrg(orgName: string): Organizations | undefined {
-    const correctOrg = OrgContext.organizations.find((org) => org.name === orgName)
-    return correctOrg
-  }
+  const [organizations, setOrgnizations] = useState<Organizations[]>([]);
+  useEffect(() => {
+    fetch("http://localhost:7707/organization")
+      .then((response) => response.json())
+      .then((data) => {
+        setOrgnizations(data);
+        console.log(data);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
 
-
-  const correctOrg = findTheOrg(NameOfOrg!)
+  const currentOrg = organizations.find((o) => o.name === authContext?.user?.organization)
 
 
   return (
     <div>
       {authContext?.user ? (
         <>
-          <h1>Welcome, {authContext.user.username + "From - " + authContext.user.organization + " " + authContext.user.place}!</h1>
+          <h1>Welcome, {authContext.user.username + " From - " + authContext.user.organization}!</h1>
+          <h3>Budget:  {currentOrg?.budget}</h3>
           <button>
-            <NavLink to={"/store"}>Store</NavLink>
+            <NavLink to={`/store/${authContext.user.organization}`}>Store</NavLink>
           </button>
           <div>
             <h3>Army Storage</h3>
             <ul>
-              {correctOrg?.resources.map((r) =>
-                <li>{r.name} + {"  -->  "} + {r.amount} </li>
+              {currentOrg?.resources.map((r) =>
+                <li>{r.name}  {"  -->  "}  {r.amount} </li>
               )}
             </ul>
           </div>
           <div>
             <h4>Cart</h4>
             <h5>{cart.missiles.map((m) => 
-              <p>{m.name} + {" - "} + {m.price}</p>
+              <p>{m.name}  {" - "}  {m.price}</p>
             )}</h5>
           </div>
           <button onClick={authContext.logout}>Logout</button>
