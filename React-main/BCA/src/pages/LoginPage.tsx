@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../providers/AuthProvider";
+import { UserContext } from "../providers/UserProvider";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const LoginPage = () => {
-  const { user, login } = useContext(AuthContext) ?? {};
+
+  const { user , login } = useContext(UserContext) ?? {};
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

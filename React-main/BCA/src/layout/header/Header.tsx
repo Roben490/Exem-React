@@ -8,9 +8,6 @@ export default function Header() {
         <h1>Business card app</h1>
         <ul>
           <li>
-            <Link_nav_bar to="/" InnerText="Home" />
-          </li>
-          <li>
             {" "}
             <Link_nav_bar to="/users" InnerText="Users" />
           </li>

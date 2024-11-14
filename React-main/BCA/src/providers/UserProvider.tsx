@@ -1,49 +1,62 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useState, ReactNode } from "react";
+import { User } from "../interface/User";
 
-interface User {
-  id?: string;
-  username: string;
-  email: string;
-  age: number;
-  img: string;
+interface UserContextType {
+  user: User | null;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
 }
 
-interface Props {
-  children: React.ReactNode;
-}
+export const UserContext = createContext<UserContextType | undefined>(
+  undefined
+);
 
-interface UserProps {
-  users: User[];
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
-}
+export const UserProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
 
-// Step 1
-// Create Context
-export const UserContext = React.createContext<UserProps>({
-  users: [],
-  setUsers: () => {},
-});
+  const login = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const response = await fetch("http://localhost:7707/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // חשוב בשביל קבלת הקוקיז
+        body: JSON.stringify({ username, password }),
+      });
+      
+      if (!response.ok) {
+        return false;
+      }
 
-export default function UserProvider({ children }: Props) {
-  const [users, setUsers] = useState<User[]>([]);
+      const data = await response.json();
+      if (data.foundUser) {
+        setUser(data.foundUser);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Login failed", error);
+      return false;
+    }
+  };
 
-  useEffect(() => {
-    fetch("")
-      .then((response) => response.json())
-      .then((data) => {
-        setUsers(data);
-        console.log(data);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  const logout = async () => {
+    try {
+      const response = await fetch("http://localhost:7707/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
 
   return (
-    // Step 2
-    // Call the Context
-    <UserContext.Provider value={{ users, setUsers }}>
-      {/* Step 3
-      Add Children */}
+    <UserContext.Provider value={{ user, login, logout }}>
       {children}
     </UserContext.Provider>
   );
-}
+};

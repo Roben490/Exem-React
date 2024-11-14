@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { UserContext } from "../providers/UserProvider";
+import { OrgnizationsContext } from "../providers/OrganizationsProvider";
 
 const EditUser: React.FC = () => {
-  const { setUsers, users } = useContext(UserContext);
 
   const { id } = useParams();
 
@@ -14,15 +13,15 @@ const EditUser: React.FC = () => {
   const [age, setAge] = useState(0);
   const [img, setImg] = useState("");
 
-  useEffect(() => {
-    const findUser = users.find((u) => u.id === id);
-    if (findUser) {
-      setUsername(findUser.username);
-      setEmail(findUser.email);
-      setAge(findUser.age);
-      setImg(findUser.img);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const findUser = users.find((u) => u.id === id);
+  //   if (findUser) {
+  //     setUsername(findUser.username);
+  //     setEmail(findUser.email);
+  //     setAge(findUser.age);
+  //     setImg(findUser.img);
+  //   }
+  // }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

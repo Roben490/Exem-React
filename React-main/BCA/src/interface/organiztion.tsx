@@ -1,4 +1,4 @@
-export interface IOrganizations {
+export interface Organizations {
     name: string,
     resources: resources[],
     budget: number,

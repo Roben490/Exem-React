@@ -5,14 +5,8 @@ import DisplayUsers from "./DisplayUsers";
 import { Route, Routes } from "react-router-dom";
 import StarsUsers from "./StarsUsers";
 import EditUser from "./EditUser";
-import DisplayUsers2 from "./DisplayUsers2";
-interface User {
-  id?: string;
-  username: string;
-  email: string;
-  age: number;
-  img: string;
-}
+// import DisplayUsers2 from "./DisplayUsers2";
+import { User } from "../interface/User";
 
 export default function Users() {
   const [users, setusers] = useState<User[]>([]);
@@ -20,7 +14,7 @@ export default function Users() {
   const [user, setuser] = useState<User>();
 
   useEffect(() => {
-    fetch("/data.json")
+    fetch("http://localhost:7707/")
       .then((response) => response.json())
       .then((data) => setusers(data))
       .catch((error) => console.error("Error fetching data:", error));
